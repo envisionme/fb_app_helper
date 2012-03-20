@@ -1,0 +1,4 @@
+name = FB App Helper
+description = helper function load specific js/css for canvas and page tab apps
+core = 6.x
+package = Social

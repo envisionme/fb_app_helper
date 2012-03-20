@@ -1,0 +1,16 @@
+<?php
+// @file this is the installation file for the module fb_app_helper.
+
+/**
+ * Implements hook_install()
+ */
+function fb_app_helper_install() {
+  variable_del('fb_app_helper_active',false); 
+}
+
+/**
+ * Implements hook_uninstall()
+ */
+function fb_app_helper_uninstall() {
+  variable_del('fb_app_helper_active'); 
+}
