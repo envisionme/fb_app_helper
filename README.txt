@@ -15,5 +15,3 @@ Add inPageTab function (how do we work this out?)
 *** Done ***
 inCanvas
 
-Requirements:
-fbconnect
