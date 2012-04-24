@@ -22,9 +22,9 @@ function fb_app_helper_init() {
     'fb_app_helper' => array(
       'path' => drupal_get_path('module', 'fb_app_helper')
     )
-  ), 'setting');
-  
+  ), 'setting');     
   _fb_app_helper_add_scripts();
+    
 }
 
 function fb_app_helper_menu() {
@@ -48,6 +48,13 @@ function fb_app_helper_settings_form() {
     '#title' => t('Activate'),
     '#default_value' => variable_get('fb_app_helper_active', FALSE),
   );
+  $form['fb_app_helper_content_type'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Allow FB stream publishing for'),
+      '#default_value' => variable_get('fb_app_helper_content_type', NULL),
+      '#options' => node_get_types('names'),
+  );
+  
   return system_settings_form($form);
 }
 
@@ -58,4 +65,87 @@ function _fb_app_helper_add_scripts() {
   if(variable_get('fb_app_helper_active', FALSE)) {
     drupal_add_js(drupal_get_path('module', 'fb_app_helper') . '/js/loader.js');  
   }
+}
+
+
+
+/**
+ * Main settings form.
+ */
+function fb_app_helper_settings() {
+  $form = array();
+
+
+  return system_settings_form($form);
+}
+
+/**
+* Implementation of hook_form_alter.
+*
+* Adds a checkbox to node edit and comment forms.  This checkbox lets
+* facebook users know that content may be published to their Wall,
+* and gives them a chance to prevent that.
+*/
+function fb_app_helper_form_alter(&$form, $form_state, $form_id) {
+  global $user;
+  $allowed_types = variable_get('fb_app_helper_content_type', NULL);
+  if (!empty($allowed_types[str_replace('_node_form', '', $form_id)]) && 1){ //_is_fbconnect_user($user->uid)) {
+    if ($form['#id'] == 'node-form') {
+      // Add checkbox to control feed publish.
+      $form['stream_publish'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'Share on Facebook',
+        '#default_value' => TRUE,
+        '#weight' => -5,
+      );
+    }
+  }
+
+}
+
+/**
+* Implementation of hook_nodeapi().
+*
+* Publish to facebook Walls when users submit nodes.
+*/
+function fb_app_helper_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  
+  if ($op == 'insert' || $op == 'update') {
+
+    if (isset($node->stream_publish) && $node->stream_publish) {
+      
+      $actions = array();
+      $actions[] = array('name' => t('Read More'),
+                         'link' => url('node/'.$node->nid, 
+                            array('absolute' => TRUE)),
+      );
+      
+      $params = array( 
+                  'method' => 'feed',
+                  'name' => $node->title,
+                  'link' => url('node/' 
+                    . $node->nid, array('absolute' => TRUE)),
+                  'picture' => url((drupal_get_path('module', 'fb_app_helper')
+                    . '/images/default.jpg'),array('absolute' => TRUE)),
+                  'caption' => t('Check out my latest showcase update on !site...',
+                        array('!site' => 
+                          variable_get('site_name', t('Nojoshmo.com')))),
+                  'description' => strip_tags($node->teaser),
+                  'actions' => $actions
+                );
+      
+      fb_app_helper_publish_dialog($params);
+    }
+  }
+  if ($op == "view" && isset($_SESSION['fb_app_helper_dialog_data']) && 
+    !empty($_SESSION['fb_app_helper_dialog_data'])) {
+    $data = $_SESSION['fb_app_helper_dialog_data'];
+    drupal_add_js($data,'inline','footer');
+    unset($_SESSION['fb_app_helper_dialog_data']);        
+  }
+}
+
+
+function fb_app_helper_publish_dialog($params) {      
+  $_SESSION['fb_app_helper_dialog_data'] = "$(document).ready( function() {setTimeout('FB.ui(" . json_encode($params) . ");',500);});\n";
 }
