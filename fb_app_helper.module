@@ -95,7 +95,7 @@ function fb_app_helper_form_alter(&$form, $form_state, $form_id) {
       $form['stream_publish'] = array(
         '#type' => 'checkbox',
         '#title' => 'Share on Facebook',
-        '#default_value' => TRUE,
+        '#default_value' => FALSE,
         '#weight' => -5,
       );
     }
