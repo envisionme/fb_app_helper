@@ -48,13 +48,37 @@ function fb_app_helper_settings_form() {
     '#title' => t('Activate'),
     '#default_value' => variable_get('fb_app_helper_active', FALSE),
   );
+  $form['test_mode_settings'] = array(
+	'#type' => 'fieldset',
+	'#title' => t('Test mode settings'),
+  );
+  $form['test_mode_settings']['fb_app_helper_test_mode'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Test mode'),
+    '#default_value' => variable_get('fb_app_helper_test_mode', TRUE),
+	'#description' => t('If enabled the share tickbox will only be displayed ')
+  );
+  $roles = user_roles();
+  $role_options = array();
+  foreach($roles as $rid => $role) {
+	$role_options[$role] = $role;
+  }
+  $form['test_mode_settings']['fb_app_helper_test_mode_role'] = array(
+    '#type' => 'select',
+    '#title' => t('Test mode'),
+    '#default_value' => variable_get('fb_app_helper_test_mode_role', 'test'),
+	'#options' => $role_options,
+	'#description' => t('If enabled the share tickbox will only be displayed ')
+  );
+  
+  
   $form['fb_app_helper_content_type'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Allow FB stream publishing for'),
       '#default_value' => variable_get('fb_app_helper_content_type', NULL),
       '#options' => node_get_types('names'),
   );
-  
+
   return system_settings_form($form);
 }
 
@@ -89,7 +113,16 @@ function fb_app_helper_settings() {
 function fb_app_helper_form_alter(&$form, $form_state, $form_id) {
   global $user;
   $allowed_types = variable_get('fb_app_helper_content_type', NULL);
-  if (!empty($allowed_types[str_replace('_node_form', '', $form_id)]) && 1){   
+  if (!empty($allowed_types[str_replace('_node_form', '', $form_id)]) && 
+		(
+			!variable_get('fb_app_helper_test_mode',TRUE) || 
+			(
+				variable_get('fb_app_helper_test_mode',TRUE) && 
+				in_array(variable_get('fb_app_helper_test_mode_role','test'), 
+					array_values($user->roles)))
+		)
+	  )
+  {   
     if ($form['#id'] == 'node-form') {
       // Add checkbox to control feed publish.
       $form['stream_publish'] = array(
