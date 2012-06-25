@@ -89,13 +89,14 @@ function fb_app_helper_settings() {
 function fb_app_helper_form_alter(&$form, $form_state, $form_id) {
   global $user;
   $allowed_types = variable_get('fb_app_helper_content_type', NULL);
-  if (!empty($allowed_types[str_replace('_node_form', '', $form_id)]) && 1){ //_is_fbconnect_user($user->uid)) {
+  if (!empty($allowed_types[str_replace('_node_form', '', $form_id)]) && 1){   
     if ($form['#id'] == 'node-form') {
       // Add checkbox to control feed publish.
       $form['stream_publish'] = array(
         '#type' => 'checkbox',
-        '#title' => '<img src="' . drupal_get_path('module', 'fb_app_helper') . 
-		'/images/btn_fb_share.gif" alt="share on facebook" />',
+        '#title' => '<img src="' . base_path() . 
+			drupal_get_path('module', 'fb_app_helper') . 
+			'/images/btn_fb_share.gif" alt="share on facebook" />',
         '#default_value' => FALSE,
         '#weight' => -5,
       );
