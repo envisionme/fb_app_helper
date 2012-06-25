@@ -94,7 +94,8 @@ function fb_app_helper_form_alter(&$form, $form_state, $form_id) {
       // Add checkbox to control feed publish.
       $form['stream_publish'] = array(
         '#type' => 'checkbox',
-        '#title' => 'Share on Facebook',
+        '#title' => '<img src="' . drupal_get_path('module', 'fb_app_helper') . 
+		'/images/btn_fb_share.gif" alt="share on facebook" />',
         '#default_value' => FALSE,
         '#weight' => -5,
       );
