@@ -136,6 +136,25 @@ function fb_app_helper_form_alter(&$form, $form_state, $form_id) {
     }
   }
 
+  switch ($form_id) {
+    // Render fb connect button on login block.
+    case 'user_login_block':
+      
+      if (isset($form['account'])) {
+        $form['account']['mail']['#maxlength'] = 320;
+      }
+    
+      $form['fboauth_button'] = array(
+        '#type' => 'item',
+        '#description' => t('Sign in using Facebook'),
+        '#value' => fboauth_action_display($action_name, $redirect = NULL, $app_id = NULL),
+        '#weight' => 1,
+        '#id' => 'fboauth_button',
+      );
+    
+    break;
+  }  
+
 }
 
 /**
@@ -183,4 +202,30 @@ function fb_app_helper_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
 
 function fb_app_helper_publish_dialog($params) {      
   $_SESSION['fb_app_helper_dialog_data'] = "$(document).ready( function() {setTimeout('FB.ui(" . json_encode($params) . ");',500);});\n";
+}
+
+
+function fb_app_helper_invite_button() {
+  return '<a href="#" 
+  onclick="FB.ui({method: \'apprequests\', message: \'Join me on ' . variable_get('site_name', 'Envisionme'); . '\'});return false;" 
+  class="btn-facebook">Invite Facebook Friends</a>';
+}
+
+
+/**
+ * Implements hook_block().
+ */
+function fbapp_helper_block($op = 'list', $delta = 0) {
+  $blocks = array();
+  switch ($op) {
+    case 'list':
+      $blocks[0]['info']  = t('Invite Facebook Friends');
+      return $blocks;
+    break;  
+    case 'view':
+      $blocks['subject'] = t('Invite Facebook Friends');
+      $blocks['content'] = fb_app_helper_invite_button();
+      return $blocks;
+    break;        
+  }
 }
