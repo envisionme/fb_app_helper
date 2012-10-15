@@ -3,7 +3,7 @@
  * @file
  * Facebook app helper functions - allows you to figure out if app is in canvas mode and adds a js and css file for canvas specific stuff.
  * Code to determine if user is in Canvas taken from https://github.com/navgarcha/jquery-facebook
- * 
+ *
  */
 
 /**
@@ -17,14 +17,14 @@ function fb_app_helper_perm() {
  * Implementation of hook_init().
  */
 function fb_app_helper_init() {
-  
+
   drupal_add_js(array(
     'fb_app_helper' => array(
       'path' => drupal_get_path('module', 'fb_app_helper')
     )
-  ), 'setting');     
+  ), 'setting');
   _fb_app_helper_add_scripts();
-    
+
 }
 
 function fb_app_helper_menu() {
@@ -42,7 +42,7 @@ function fb_app_helper_menu() {
  * Admin settings form.
  */
 function fb_app_helper_settings_form() {
-  $form = array();    
+  $form = array();
   $form['fb_app_helper_active'] = array(
     '#type' => 'checkbox',
     '#title' => t('Activate'),
@@ -70,8 +70,8 @@ function fb_app_helper_settings_form() {
 	'#options' => $role_options,
 	'#description' => t('If enabled the share tickbox will only be displayed ')
   );
-  
-  
+
+
   $form['fb_app_helper_content_type'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Allow FB stream publishing for'),
@@ -83,11 +83,11 @@ function fb_app_helper_settings_form() {
 }
 
 /**
-* Add CSS and JS Files 
+* Add CSS and JS Files
 */
 function _fb_app_helper_add_scripts() {
   if(variable_get('fb_app_helper_active', FALSE)) {
-    drupal_add_js(drupal_get_path('module', 'fb_app_helper') . '/js/loader.js');  
+    drupal_add_js(drupal_get_path('module', 'fb_app_helper') . '/js/loader.js');
   }
 }
 
@@ -113,22 +113,22 @@ function fb_app_helper_settings() {
 function fb_app_helper_form_alter(&$form, $form_state, $form_id) {
   global $user;
   $allowed_types = variable_get('fb_app_helper_content_type', NULL);
-  if (!empty($allowed_types[str_replace('_node_form', '', $form_id)]) && 
+  if (!empty($allowed_types[str_replace('_node_form', '', $form_id)]) &&
 		(
-			!variable_get('fb_app_helper_test_mode',TRUE) || 
+			!variable_get('fb_app_helper_test_mode',TRUE) ||
 			(
-				variable_get('fb_app_helper_test_mode',TRUE) && 
-				in_array(variable_get('fb_app_helper_test_mode_role','test'), 
+				variable_get('fb_app_helper_test_mode',TRUE) &&
+				in_array(variable_get('fb_app_helper_test_mode_role','test'),
 					array_values($user->roles)))
 		)
 	  )
-  {   
+  {
     if ($form['#id'] == 'node-form') {
       // Add checkbox to control feed publish.
       $form['stream_publish'] = array(
         '#type' => 'checkbox',
-        '#title' => '<img src="' . base_path() . 
-			drupal_get_path('module', 'fb_app_helper') . 
+        '#title' => '<img src="' . base_path() .
+			drupal_get_path('module', 'fb_app_helper') .
 			'/images/btn_fb_share.gif" alt="share on facebook" />',
         '#default_value' => FALSE,
         '#weight' => -5,
@@ -139,21 +139,22 @@ function fb_app_helper_form_alter(&$form, $form_state, $form_id) {
   switch ($form_id) {
     // Render fb connect button on login block.
     case 'user_login_block':
-      
+
       if (isset($form['account'])) {
         $form['account']['mail']['#maxlength'] = 320;
       }
-    
+
       $form['fboauth_button'] = array(
         '#type' => 'item',
         '#description' => t('Sign in using Facebook'),
-        '#value' => fboauth_action_display($action_name, $redirect = NULL, $app_id = NULL),
+        '#value' => fboauth_action_display('connect'),
         '#weight' => 1,
         '#id' => 'fboauth_button',
       );
-    
+
     break;
-  }  
+  }
+
 
 }
 
@@ -163,69 +164,157 @@ function fb_app_helper_form_alter(&$form, $form_state, $form_id) {
 * Publish to facebook Walls when users submit nodes.
 */
 function fb_app_helper_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
-  
+
   if ($op == 'insert' || $op == 'update') {
 
     if (isset($node->stream_publish) && $node->stream_publish) {
-      
+
       $actions = array();
       $actions[] = array('name' => t('Read More'),
-                         'link' => url('node/'.$node->nid, 
+                         'link' => url('node/'.$node->nid,
                             array('absolute' => TRUE)),
       );
-      
-      $params = array( 
+
+      $params = array(
                   'method' => 'feed',
                   'name' => $node->title,
-                  'link' => url('node/' 
+                  'link' => url('node/'
                     . $node->nid, array('absolute' => TRUE)),
                   'picture' => url((drupal_get_path('module', 'fb_app_helper')
                     . '/images/default.jpg'),array('absolute' => TRUE)),
                   'caption' => t('Check out my latest showcase update on !site...',
-                        array('!site' => 
+                        array('!site' =>
                           variable_get('site_name', t('Nojoshmo.com')))),
                   'description' => strip_tags($node->teaser),
                   'actions' => $actions
                 );
-      
+
       fb_app_helper_publish_dialog($params);
     }
   }
-  if ($op == "view" && isset($_SESSION['fb_app_helper_dialog_data']) && 
+  if ($op == "view" && isset($_SESSION['fb_app_helper_dialog_data']) &&
     !empty($_SESSION['fb_app_helper_dialog_data'])) {
     $data = $_SESSION['fb_app_helper_dialog_data'];
     drupal_add_js($data,'inline','footer');
-    unset($_SESSION['fb_app_helper_dialog_data']);        
+    unset($_SESSION['fb_app_helper_dialog_data']);
   }
 }
 
 
-function fb_app_helper_publish_dialog($params) {      
+function fb_app_helper_publish_dialog($params) {
   $_SESSION['fb_app_helper_dialog_data'] = "$(document).ready( function() {setTimeout('FB.ui(" . json_encode($params) . ");',500);});\n";
 }
 
 
+/**
+ * Implements hook_footer().
+ */
+function fb_app_helper_footer() {
+  if(variable_get('fb_app_helper_active', FALSE)) {
+    $footer = "
+      <div id=\"fb-root\"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = \"//connect.facebook.net/en_GB/all.js#xfbml=1&appId=458850667478653\";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>";
+
+    if(isset($_GET['demo'])) {
+      $footer .= "<img src=\"http://www.facebook.com/images/fbconnect/login-buttons/connect_light_medium_short.gif\" border=\"0\" onclick=\"FB.ui({method: 'apprequests', message: 'Join Envisionme'}, null);\" style=\"cursor:pointer;\">";
+    }
+    return $footer;
+  }
+}
+
 function fb_app_helper_invite_button() {
-  return '<a href="#" 
-  onclick="FB.ui({method: \'apprequests\', message: \'Join me on ' . variable_get('site_name', 'Envisionme'); . '\'});return false;" 
-  class="btn-facebook">Invite Facebook Friends</a>';
+  return '<a href="#"
+  onclick="FB.ui({method: \'apprequests\', message: \'Join me on ' . variable_get('site_name', 'Envisionme') . '\'});return false;"
+  class="btn btn-facebook">Invite Facebook Friends</a>';
 }
 
 
 /**
  * Implements hook_block().
  */
-function fbapp_helper_block($op = 'list', $delta = 0) {
+function fb_app_helper_block($op = 'list', $delta = 0) {
   $blocks = array();
   switch ($op) {
     case 'list':
       $blocks[0]['info']  = t('Invite Facebook Friends');
       return $blocks;
-    break;  
+    break;
     case 'view':
       $blocks['subject'] = t('Invite Facebook Friends');
       $blocks['content'] = fb_app_helper_invite_button();
       return $blocks;
-    break;        
+    break;
+  }
+}
+
+/**
+ * Implements hook_fboauth_user_presave().
+ */
+function fb_app_helper_fboauth_user_presave(&$edit, $fbuser) {
+  //watchdog('fbdebug','User: ' . print_r($edit,true) . ' - FBUser: ' . print_r($fbuser,true));
+  //applicant for now.
+  $edit['roles'] = array("4"=>4);
+  //TODO: make decision on role - currently can't since fb connect button in signin block on homepage,
+  //not path specific.
+}
+
+/**
+ * Implements hook_fboauth_user_save().
+ */
+function fb_app_helper_fboauth_user_save($account, $fbuser) {
+  if (in_array('applicant', array_values($account->roles))){ //applicant
+    //create basic applicant profile from fb provided data
+    $node = new stdClass();
+    //Main Node Fields
+
+    $node->name = '';  
+    if (isset($fbuser->name)) {
+      $node->name = $fbuser->name;
+    }
+    $node->title = $node->name;
+    $node->type = 'uprofile';
+    $node->uid = $account->uid;
+
+    $node->created = time();
+    $node->changed = $node->created;
+    $node->promote = 0; // Display on front page ? 1 : 0
+    $node->sticky = 0;  // Display top of page ? 1 : 0
+    $node->format = 1;  // 1:Filtered HTML, 2: Full HTML
+    $node->status = 1;   // Published ? 1 : 0
+    $node->language = 'en';         
+
+    
+    if (isset($fbuser->first_name)) {
+      $node->field_name[0]['value'] = $fbuser->first_name;
+    }
+    if (isset($fbuser->last_name)) {
+      $node->field_app_last_name[0]['value'] = $fbuser->last_name;
+    }
+    
+    if (isset($fbuser->birthday)) {
+      $date_bits = explode('/',$fbuser->birthday);
+      $date['value'] = $date_bits[2] . '-'.$date_bits[1].'-'.$date_bits[0].'T00:00:00';
+      $date['timezone'] = 'Africa/Johannesburg';
+      $date['timezone_db'] = 'Africa/Johannesburg';
+      $date['date_type'] = 'date';        
+      $node->field_app_dob[0] = $date;
+    }
+    
+    if (isset($fbuser->gender)) {
+      
+      $node->field_app_gender[0]['value'] = $fbuser->gender;    
+    }
+    
+    $node = node_submit($node);
+    node_save($node);    
+  }
+  else {  //company
+    //TODO: complete when company registration is done
   }
 }
