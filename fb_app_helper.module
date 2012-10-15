@@ -270,7 +270,7 @@ function fb_app_helper_fboauth_user_presave(&$edit, $fbuser) {
 function fb_app_helper_fboauth_user_save($account, $fbuser) {
   if (in_array('applicant', array_values($account->roles))){ //applicant
     //create basic applicant profile from fb provided data if user does not already have a profile
-    $node = node_load(array("uid"=>$account->uid,"type"=>"uprofile"))
+    $node = node_load(array("uid"=>$account->uid,"type"=>"uprofile"));
     if(!$node){
       $node = new stdClass();
       //Main Node Fields
