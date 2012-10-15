@@ -269,50 +269,53 @@ function fb_app_helper_fboauth_user_presave(&$edit, $fbuser) {
  */
 function fb_app_helper_fboauth_user_save($account, $fbuser) {
   if (in_array('applicant', array_values($account->roles))){ //applicant
-    //create basic applicant profile from fb provided data
-    $node = new stdClass();
-    //Main Node Fields
+    //create basic applicant profile from fb provided data if user does not already have a profile
+    $node = node_load(array("uid"=>$account->uid,"type"=>"uprofile"))
+    if(!$node){
+      $node = new stdClass();
+      //Main Node Fields
 
-    $node->name = '';  
-    if (isset($fbuser->name)) {
-      $node->name = $fbuser->name;
-    }
-    $node->title = $node->name;
-    $node->type = 'uprofile';
-    $node->uid = $account->uid;
+      $node->name = '';  
+      if (isset($fbuser->name)) {
+        $node->name = $fbuser->name;
+      }
+      $node->title = $node->name;
+      $node->type = 'uprofile';
+      $node->uid = $account->uid;
 
-    $node->created = time();
-    $node->changed = $node->created;
-    $node->promote = 0; // Display on front page ? 1 : 0
-    $node->sticky = 0;  // Display top of page ? 1 : 0
-    $node->format = 1;  // 1:Filtered HTML, 2: Full HTML
-    $node->status = 1;   // Published ? 1 : 0
-    $node->language = 'en';         
+      $node->created = time();
+      $node->changed = $node->created;
+      $node->promote = 0; // Display on front page ? 1 : 0
+      $node->sticky = 0;  // Display top of page ? 1 : 0
+      $node->format = 1;  // 1:Filtered HTML, 2: Full HTML
+      $node->status = 1;   // Published ? 1 : 0
+      $node->language = 'en';         
 
-    
-    if (isset($fbuser->first_name)) {
-      $node->field_name[0]['value'] = $fbuser->first_name;
-    }
-    if (isset($fbuser->last_name)) {
-      $node->field_app_last_name[0]['value'] = $fbuser->last_name;
-    }
-    
-    if (isset($fbuser->birthday)) {
-      $date_bits = explode('/',$fbuser->birthday);
-      $date['value'] = $date_bits[2] . '-'.$date_bits[1].'-'.$date_bits[0].'T00:00:00';
-      $date['timezone'] = 'Africa/Johannesburg';
-      $date['timezone_db'] = 'Africa/Johannesburg';
-      $date['date_type'] = 'date';        
-      $node->field_app_dob[0] = $date;
-    }
-    
-    if (isset($fbuser->gender)) {
       
-      $node->field_app_gender[0]['value'] = $fbuser->gender;    
+      if (isset($fbuser->first_name)) {
+        $node->field_name[0]['value'] = $fbuser->first_name;
+      }
+      if (isset($fbuser->last_name)) {
+        $node->field_app_last_name[0]['value'] = $fbuser->last_name;
+      }
+      
+      if (isset($fbuser->birthday)) {
+        $date_bits = explode('/',$fbuser->birthday);
+        $date['value'] = $date_bits[2] . '-'.$date_bits[1].'-'.$date_bits[0].'T00:00:00';
+        $date['timezone'] = 'Africa/Johannesburg';
+        $date['timezone_db'] = 'Africa/Johannesburg';
+        $date['date_type'] = 'date';        
+        $node->field_app_dob[0] = $date;
+      }
+      
+      if (isset($fbuser->gender)) {
+        
+        $node->field_app_gender[0]['value'] = $fbuser->gender;    
+      }
+      
+      $node = node_submit($node);
+      node_save($node);    
     }
-    
-    $node = node_submit($node);
-    node_save($node);    
   }
   else {  //company
     //TODO: complete when company registration is done
