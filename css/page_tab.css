@@ -1,0 +1,93 @@
+body.front input.form-submit, #header-group-inner { background:none repeat scroll 0 0 #02213e; }
+#branding a { color:#02213e; }
+#preface-first, body.front .btn.big-btn.dark-blue, #horizontal-container ul.horizontal-menu li { background:none repeat scroll 0 0 #022646; }
+.dropdown-menu.sign-in input.form-submit, .dropdown-menu li > a:hover, .dropdown-menu .active > a, .dropdown-menu .active > a:hover, body.front .btn.big-btn, .pika-button:hover, #preface-middle { background:none repeat scroll 0 0 #37b2eb; }
+#preface-last, #horizontal-container ul.horizontal-menu li:nth-child(2n+3) { background:none repeat scroll 0 0 #ffcd00; }
+#horizontal-container ul.horizontal-menu li:nth-child(2n+3).active { background:none repeat scroll 0 0 #fff; }
+a, a:hover, span.form-required, .headline-user-name, .is-today .pika-button, #login-bar > li > a:hover, #login-bar > li > span > a:hover, #footer-wrapper ul.links li a:hover, #banner-splash ul.splash-menu li a:hover, #main-menu .dropdown-menu.sign-in #user-login-form .forgot-password { color:#37b2eb; }
+#banner-splash ul.splash-menu li a { background:url(/sites/all/themes/envisionme_01/images/sprite.png); }
+#banner-splash ul li.splash-search a { background-position:0 -92px; }
+#banner-splash ul li.splash-tour a { background-position:0 -184px; }
+#block-group-search form input.form-submit { background:url(/sites/all/themes/envisionme_01/images/search_button.png) no-repeat scroll center center #022646; }
+#block-group-tag-profile .block-group-inner img {
+  width:0px;
+  height:0px;
+  padding-left:488px;
+  padding-top:150px;
+  background:url(/sites/all/themes/envisionme_01/images/front/tag.png);
+}
+#banner-splash ul li.splash-video a { display:none; }
+#login-bar .dot, .logged-in #block-content_complete-uprofile .content-complete-percent-bar { background-color:#37b2eb; }
+#content-block-two .block .view-latest-showcase-items ul li a.showcase_icon, #block-user_action_links-7 a#video-image:before, .node-type-job-specification #middle-content .job-specification ul li > a:before, #block-views-applicant_profile-block_7 a:before, #block-user_action_links-2 ul li > a:before, #block-user_action_links-21 .content .icon:before, .view-latest-showcase-items .field-content .icon:before { background-image:url(/sites/all/themes/envisionme_01/images/sprites/main-sprite.png); }
+div.error { color:#94525a; }
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {
+  border-color:rgba(55,178,235,0.8);
+  box-shadow:0 1px 1px rgba(0,0,0,0.075) inset, 0 0 4px rgba(55,178,235,0.6);
+}
+div.watch-video.img { background-image:url(/sites/all/themes/envisionme_01/images/watch_the_intro_video.png); }
+div.jo-url.img { background-image:url(/sites/all/themes/envisionme_01/images/site_img_link.png); }
+div.qr.img { background-image:url(/sites/all/themes/envisionme_01/images/cv.png); }
+div.profile-video.img { background-image:url(/sites/all/themes/envisionme_01/images/profile_video_tour.png); }
+div.careers.img { background-image:url(/sites/all/themes/envisionme_01/images/career_achievement_tour.png); }
+div.profiles.img { background-image:url(/sites/all/themes/envisionme_01/images/news_feed_tour.png); }
+div.reference.img { background-image:url(/sites/all/themes/envisionme_01/images/reference_speaker_tour.png); }
+div.personalized-url.img {
+  background-image:url(/sites/all/themes/envisionme_01/images/1_block_tools.png);
+  background-position:left 35px;
+}
+div.resume-builder.img { background-image:url(/sites/all/themes/envisionme_01/images/2_block_tools.png); }
+div.companies-to-follow.img { background-image:url(/sites/all/themes/envisionme_01/images/3_block_tools.png); }
+div.profile-photo.img { background-image:url(/sites/all/themes/envisionme_01/images/4_block_tools.png); }
+div.multimedia-reference.img { background-image:url(/sites/all/themes/envisionme_01/images/5_block_tools.png); }
+div.friends-importer.img { background-image:url(/sites/all/themes/envisionme_01/images/6_block_tools.png); }
+div.search-ability.img { background-image:url(/sites/all/themes/envisionme_01/images/7_block_tools.png); }
+div.google-maps.img { background-image:url(/sites/all/themes/envisionme_01/images/8_block_tools.png); }
+div.who-is-talent.img { background-image:url(/sites/all/themes/envisionme_01/images/who_is_the_talent.png); }
+div.who-are-my-viewers.img { background-image:url(/sites/all/themes/envisionme_01/images/who_are_my_viewers.png); }
+#block-user_action_links-25 ul li > a:before { background:url(/sites/all/themes/envisionme_01/images/take-a-tour-sprite.png) 99px 99px no-repeat; }
+#block-user_action_links-25 #banner-splash-wrapper { background:url(/sites/all/themes/envisionme_01/images/big-header.png) 241px -1px no-repeat; }
+.blog-created-by p:before { background-image:url(/sites/all/themes/envisionme_01/images/sprites/main-sprite.png); }
+#middle-content div.node.blog .blog-date-submitted { background-color:#022646; }
+#middle-content .views-row.views-row-3 div.node.blog.teaser .blog-date-submitted { background-color:#ffcd00; }
+#middle-content .views-row.views-row-2 div.node.blog.teaser .blog-date-submitted { background-color:#37b2eb; }
+#middle-content .views-row.views-row-1 div.node.blog.teaser .blog-date-submitted { background-color:#022646; }
+#banner-splash img {
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+}
+.import-friends {
+  border-top:1px dashed #ccc;
+  padding-top:10px;
+}
+#block-group-facebook .block-group-inner {
+  height:515px;
+  padding-bottom:10px;
+}
+body.front #block-formblock-user_register fieldset .form-item { margin:0; }
+#twitter_update_list li:before { background-image:url(/sites/all/themes/envisionme_01/images/sprites/main-sprite.png); }
+#twitter_update_list li span:after { background-image:url(/sites/all/themes/envisionme_01/images/sprites/main-sprite.png); }
+#heartbeat-stream-myactivity .heartbeat-message-block:hover .hover-delete {
+  position:relative;
+  top:0;
+  left:2px;
+  display:block;
+  padding-right:2px;
+}
+#heartbeat-stream-myactivity:hover .hover-delete a {
+  color:#37b2eb;
+  position:relative;
+}
+#heartbeat-stream-privateheartbeat .heartbeat-message-block:hover .hover-delete {
+  position:relative;
+  top:0;
+  left:2px;
+  display:block;
+  padding-right:2px;
+}
+#heartbeat-stream-privateheartbeat:hover .hover-delete a {
+  color:#37b2eb;
+  position:relative;
+}
+#cover-images > li a img.selected, #cover-images > li a:hover img.selected { border-color:#37b2eb; }
+div.print-logo { background-color:#02213e; }
