@@ -2,7 +2,7 @@
    * Add all canvas related bindings here
    */
   function attachCanvasHelpers(){
-    initLinkFixer();
+    //initLinkFixer();
   }
 
   /*
