@@ -175,16 +175,25 @@ function fb_app_helper_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
                             array('absolute' => TRUE)),
       );
 
+    switch($node->type) {
+        case 'job_specification':
+	 $title = $node->title;
+         $caption = t('Vacancy on !site - ' . $node->title, array('!site' => variable_get('site_name', t('Nojoshmo.com'))));
+        break;
+        default:
+         $title = $node->title;
+         $caption = t('Check out my latest update on !site...', array('!site' => variable_get('site_name', t('Nojoshmo.com'))));
+        break;
+      }
+
       $params = array(
                   'method' => 'feed',
-                  'name' => $node->title,
+                  'name' => $title,
                   'link' => url('node/'
                     . $node->nid, array('absolute' => TRUE)),
                   'picture' => url((drupal_get_path('module', 'fb_app_helper')
-                    . '/images/default.jpg'),array('absolute' => TRUE)),
-                  'caption' => t('Check out my latest showcase update on !site...',
-                        array('!site' =>
-                          variable_get('site_name', t('Nojoshmo.com')))),
+                    . '/images/envlogo.jpg'),array('absolute' => TRUE)),
+                  'caption' => $caption,
                   'description' => strip_tags($node->teaser),
                   'actions' => $actions
                 );
